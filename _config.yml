@@ -24,7 +24,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: 기초부터 다시 시작하기
+title: 기초부터 탄탄히
 email: wodusl1103@gmail.com
 author: 김재연
 
