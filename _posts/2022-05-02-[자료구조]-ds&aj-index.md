@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Stack
-author: Data Structures & Algorithms in Java 목차
+title: Data Structures & Algorithms in Java 목차
+author: jyKim
 categories: 자료구조
 tags:
 - JAVA
