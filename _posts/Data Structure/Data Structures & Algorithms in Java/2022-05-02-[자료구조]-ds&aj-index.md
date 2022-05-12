@@ -17,7 +17,7 @@ Michael T. Goodrich et al., 『Data Structures & Algorithms in Java - 6th Editio
 
 ## 3. Arrays and Linked Lists
 
-## [4. Analysis Tools](https://kjy11.github.io/blog/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/2022/05/02/자료구조-Analysis-Tools.html)
+## [4. Analysis Tools](https://kjy11.github.io/blog/자료구조/2022/05/11/자료구조-Analysis-Tools.html)
 
 ## 5. Recursion
 
