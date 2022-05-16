@@ -23,7 +23,7 @@ Michael T. Goodrich et al., 『Data Structures & Algorithms in Java - 6th Editio
 
 ## 6. Stacks and Queues
 
-## 7. List Abstractions
+## 7. [List Abstractions](https://kjy11.github.io/blog/자료구조/2022/05/16/자료구조-List-Abstractions.html)
 
 ## 8. Tree Structures
 
