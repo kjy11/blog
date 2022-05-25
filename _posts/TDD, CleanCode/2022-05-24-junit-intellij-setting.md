@@ -2,7 +2,7 @@
 layout: post
 title: IntelliJ에서 JUnit 사용 시 설정
 author: jyKim
-categories: TDD
+categories: TDD, CleanCode
 tags:
 - JUnit
 - IntelliJ
