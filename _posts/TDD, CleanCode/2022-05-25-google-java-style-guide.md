@@ -300,7 +300,7 @@ Predicate<String> predicate = str ->
 2. else나 catch 같은 예약어를 해당 줄에서 앞에오는 닫는 중괄호(`}`)와 분리  
 3. 여는 중괄호(`{`) 앞에, 두가지 예외:  
     - `@SomeAnnotation({a,b})` (공백이 사용되지 않음)  
-    - `String[][] x = {{"foo"}};` (아래 9 항목에 따라, `{{` 사이에 공백이 필요하지 않음)  
+    - `String[][] x = {% raw %}{{"foo"}}{% endraw %};` (아래 9 항목에 따라, `{% raw %}{{{% endraw %}` 사이에 공백이 필요하지 않음)  
 4. 이항 또는 삼항 연산자 양 옆. 이것은 또한 아래의 "유사 연산자" 기호에도 적용된다:  
     - 결합형 타입 한정 내에서의 앰퍼샌드: `<T extends Foo & Bar>`  
     - 다수의 예외를 다루는 catch 블록의 파이프: `catch (FooException | BarEcveption e)`  
