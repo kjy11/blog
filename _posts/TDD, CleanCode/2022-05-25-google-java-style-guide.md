@@ -349,3 +349,202 @@ private Color color;  // 정렬되지 않은 상태로 둘 수 있다.
 
 선택적 그룹화 괄호는 작성자와 검토자가 그것이 없어도 코드가 오해되거나 그것이 코드의 가독성에 도움을 줄 합리적인 여지가 없다고 동의할때만 생략된다. 
 모든 독자가 모든 java 연산자의 우선순의 테이블을 기억하고 있다고 가정하는 것은 합리적이지 않다.
+
+### 4.8 특수 구조
+
+#### 4.8.1 Enum class  
+
+enum 상수 뒤에 오는 각 콤마 뒤 줄바꿈은 선택이다. 
+추가적인 빈 줄(보통은 한 줄) 또한 허용된다. 
+
+```java
+private enum Answer {
+  YES {
+    @Override public String toString() {
+      return "yes";
+    }
+  },
+
+  NO,
+  MAYBE
+}
+```
+
+method와 상수에 대한 documentation이 없는 enum class는 선택적으로 배열 initializer(섹션 4.8.3.1)와 같은 형태를 가질 수 있다.  
+
+```java
+private enum Suit { CLUBS, HEARTS, SPADES, DIAMONDS }
+```
+
+enum class는 class이기 때문에, class 서식에 대한 모든 다른 규칙들이 적용된다.  
+
+#### 4.8.2 변수 선언  
+
+##### 4.8.2.1 한 선언에 한 변수  
+
+모든 변수 선언 (field나 local) 오직 하나의 변수만 선언한다: `int a, b;` 같은 선언은 사용되지 않는다.  
+
+예외: `for` 루프의 헤더에서는 다중 변수 선언이 허용된다.  
+
+##### 4.8.2.2 필요할 때 선언  
+
+지역변수는 습관적으로 그것이 포함하는 블록 또는 유사 블록 구조의 시작부분에 선언되지 않는다. 
+대신, 지역변수는 그 범위를 최소화하기 위해 그것이 처음으로 사용되는 곳 가까이 선언된다. 
+지역변수 선언은 일반적으로 initializer를 가지거나 선언된 직후 초기화된다.  
+
+#### 4.8.3 배열  
+
+##### 4.8.3.1 배열 initializer: "유사 블록"이 될 수 있음  
+
+모든 배열 initializer는 선택적으로 "유사 블록 구조"와 같은 형식을 가질 수 있다. 
+예를 들어 다음의 코드는 유효하다(전체 목록 아님):  
+
+```java
+new int[] {           new int[] {
+  0, 1, 2, 3            0,
+  }                       1,
+  2,
+  new int[] {             3,
+  0, 1,               }
+  2, 3
+  }                     new int[]
+  {0, 1, 2, 3}
+```
+
+##### 4.8.3.2 C 스타일의 배열 선언 미사용  
+
+대괄호는 변수가 아닌 타입에 붙는다: `String args[]` 말고 `String[] args`를 사용  
+
+#### 4.8.4 switch 문  
+
+용어 설명: switch 블록의 중괄호 내부에는 하나 이상의 구문 묶음이 있다. 
+각 묶음은 하나 이상의 구문(마지막 묶음의 경우 0개 이상의 구문)이 따라오는 하나 이상의 switch 표지(`case Foo:` 또는 `default:`)로 이루어진다.  
+
+##### 4.8.4.1 들여쓰기  
+
+다른 블록과 마찬가지로 switch 블록의 내용은 +2 들여쓰기한다.  
+
+switch 표지 뒤에는 줄바꿈을 하고 블록을 여는 것처럼 들여쓰기 수준이 +2만큼 증가한다. 
+따라오는 switch 표지는 블록이 닫힌 것 처럼 이전 들여쓰기 수준으로 돌아간다.  
+
+##### 4.8.4.2 fall-through: 주석 
+
+switch 블록 내부에서 각 구문 묶음은 즉시 종료되거나(`break`, `continue`, `return`, 예외 발생과 함께) 
+실행이 다음 명령문 묶음으로 계속될 수 있음을 나타내기 위한 주석으로 표시된다. 
+fall-through에 대한 아이디어를 전달하는 모든 주석이 허용된다(일반적으로 `// fall through`). 
+이 특별한 주석은 switch 블록의 마지막 구문 묶음에서는 필요하지 않다. 
+
+```java
+switch (input) {
+  case 1:
+  case 2:
+    prepareOneOrTwo();
+    // fall through
+  case 3:
+    handleOneTwoOrThree();
+    break;
+  default:
+    handleLargeNumber(input);
+}
+```
+
+`case 1:` 뒤에는 주석이 필요 없다는 점에 주목해라. 주석은 오직 구문 묶음의 마지막에 온다.  
+
+##### 4.8.4.3 `default` 표지의 존재  
+
+각 switch문은 코드를 포함하지 않을때에도 `default` 구문 묶음을 포함한다.  
+
+예외: enum 타입에 대한 switch문은 해당 유형의 모든 가능한 값에 대한 명시적 경우를 포함하는 경우 default 구문 묶음이 생략될 수 있다. 
+누락된 경우가 있으면 IDE 또는 기타 정적 사례 분석도구가 경고를 표시할 수 있다.  
+
+#### 4.8.5 Annotation  
+
+##### 4.8.5.1 타입 사용 annotation  
+
+타입 사용 annotation은 적용되는 유형의 바로 앞에 나타난다. 
+`@Target(ElementType.TYPE_USE)`의 메타 annotation이 붙은 annotation은 타입 사용 annotation이다.  
+
+```java
+final @Nullable String name;
+
+public @Nullable Person getPersonByName(String name);
+```
+
+##### 4.8.5.2 class annotation
+
+class에 적용되는 annotation은 documentation 블록 바로 뒤에 나타나고 
+각 annotation은 자체적인 한 줄로 나열된다(즉, 한 줄에 한 annotation). 
+이러한 줄 바꿈은 들여쓰기 수준이 증가하지 않는다. 예시:  
+
+```java
+@Deprecated
+@CheckReturnValue
+public final class Frozzler { ... }
+```
+
+##### 4.8.5.3 method와 constructor annotation  
+
+method와 constructor의 annotation에 대한 규칙은 이전 섹션(섹션 4.8.5.2)과 같다. 예시:  
+
+```java
+@Deprecated
+@Override
+public String getNameIfPresent() { ... }
+```
+
+예외: 매개변수가 없는 하나의 annotation은 signature의 첫번째 줄가 함께 나타날 수 있다. 예시:  
+
+```java
+@Override public int hashCode() { ... }
+```
+
+##### 4.8.4.5.4 field annotation  
+
+field에 적용되는 annotation 또한 documentation 블록 바로 뒤에 나타난다. 
+하지만 이 경우 여러 개의 annotation(매개변수화 가능)은 같은 줄에 나열될 수 있다; 예시:  
+
+```java
+@Partial @Mock DataLoader loader;
+```
+
+##### 4.8.5.5 매개변수와 지역 변수 annotation  
+
+매개변수나 지역변수의 annotation의 서식에 대해서는 특정한 규칙이 없다(물론 타입 사용 annotation일 때를 제외하고).  
+
+#### 4.8.6 주석  
+
+이 섹션에서는 구현 주석을 다룬다. Javadoc에 대한 것은 Section 7에 분리되어있다.  
+
+모든 줄바꿈 앞에 구현 주석이 뒤따르는 임의의 공백이 올 수 있다. 
+이러한 주석은 공백이 아닌 줄로 표현한다.  
+
+##### 4.8.6.1 블록 주석 형식  
+
+블록 주석은 주변 코드와 같은 수준으로 들여쓰기 된다. 
+그것은 `/* ... */` 형식이나 `// ...` 형식일 수 있다. 
+여러 줄 `/* ... */` 주석의 경우 이어지는 줄은 *로 시작해야 이전 줄의 *에 맞춰 정렬된다.  
+
+```java
+/*
+ * This is          // And so           /* Or you can
+ * okay.            // is this.          * even do this. */
+ */
+```
+
+주석은 별표나 다른 문자로 표현된 구간에 포함되지 않는다.  
+
+> 팁: 여러 줄의 주석을 작성할 때, 필요에 따라 줄을 다시 감싸기 위해 자동 코드 포맷터를 사용하길 원한다면 `/* ... */` 형식일 사용해라(단락 스타일). 
+> 대부분의 포맷터는 `// ...` 형식의 주석 블록에서 줄을 다시 감싸지 않는다.   
+ 
+#### 4.8.7 제어자  
+
+class와 member 제어자가 존재한다면 그것은 Java 언어 명세가 권장하는 순서로 나타난다.  
+
+```text
+public protected private abstract default static final transient volatile synchronized native strictfp
+```
+
+#### 4.8.8 숫자 literal  
+
+긴 값의 정수 literal은 대문자 L 접미사를 사용하고 소문자는 사용하지 않는다(숫자 1과의 혼동을 피하기 위해). 
+예를 들어 `3000000000l`를 사용하지 않고 `3000000000L`를 사용한다.  
