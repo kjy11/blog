@@ -548,3 +548,122 @@ public protected private abstract default static final transient volatile synchr
 
 긴 값의 정수 literal은 대문자 L 접미사를 사용하고 소문자는 사용하지 않는다(숫자 1과의 혼동을 피하기 위해). 
 예를 들어 `3000000000l`를 사용하지 않고 `3000000000L`를 사용한다.  
+
+## 5 명명 
+
+### 5.1 모든 식별자에 대한 공통 규칙  
+
+식별자는 오직 ASCII 문자와 숫자만 사용하고 아래에 명시된 몇몇 경우에는 언더바를 사용한다. 
+따라서 각각의 유효한 식별 명은 정규표현식 `\w+`를 따른다.  
+
+구글 스타일에서는 특정한 접미사나 접두사가 사용되지 않는다. 예를들어 `name_`, `mName`, `s_name`, `kName`은 구글 스타일이 아니다.  
+
+### 5.2 식별자 유형별 규칙
+
+#### 5.2.1 package 명  
+
+package 명은 오직 소문자와 숫자(`_` 제외)만 사용한다. 
+연속적인 단어는 단순히 붙여서 쓴다. 
+예를들어 `com.example.deepSpace` 혹은 `com.example.deep_space`가 아닌 `com.example.deepspace`를 사용한다.  
+
+#### 5.2.2 class 명  
+
+class 명은 UpperCamelCase를 사용한다.  
+
+class 명은 일반적으로 명서 혹은 명사구이다. 예를들어 `Character` 혹은 `ImmutableList`와 같이 사용한다. 
+interface 명 역시 명사 또는 명사구일 수 있지만 때때로 형용사나 형용사구일 수 있다(예, `Readable`).  
+
+annotation 타입 명명에 대한 특정 규칙이나 잘 정립된 약속은 없다.  
+
+테스트 class는 `HashIntegrationTest`와 같이 `Test`로 끝나는 이름을 갖는다. 
+하나의 class에 대해 다룬다면 `HashImplTest`와 같이 class 명 뒤에 `Test`를 붙인 이름을 갖는다.  
+
+#### 5.2.3 method 명  
+
+method 명은 lowerCamelCase를 사용한다.  
+
+method 명은 일반적으로 동사 혹은 동사구이다. 예를 들어 `sendMessage` 혹은 `stop` 같은 이름을 사용한다.  
+
+밑줄은 JUnit 테스트 method에서 이름의 논리적 요소를 나누기 위해 나타날 수 있다. 
+`transferMoney_deductsFromSource`와 같이 각 요소는 lowerCamelCase로 쓰인다. 
+테스트 method 명에 대해서는 적절한 한가지 방법이 존재하지 않는다.  
+
+#### 5.2.4 상수 명  
+
+상수 명은 `UPPER_SNAKE_CASE`를 사용한다: 대문자로 이루어지며 각 단어는 밑줄로 나누어 진다. 
+상수란 정확히 무엇인가?  
+
+상수는 그 내용이 완전히 바뀌지 않고 method에 감지할 수 있는 부작용이 없는 static final field이다. 
+그 예는 원시타입, 문자열, 변하지 않는 값을 가진 class 그리고 null로 설정된 모든 항목을 포함한다. 
+인스턴스의 관찰 가능한 상태가 바뀔 수 있다면 그것은 상수가 아니다. 
+그저 객체를 바꾸지 않겠다는 의도만으로는 충분하지 않다. 예시:  
+
+```java
+// Constants
+static final int NUMBER = 5;
+static final ImmutableList<String> NAMES = ImmutableList.of("Ed", "Ann");
+static final Map<String, Integer> AGES = ImmutableMap.of("Ed", 35, "Ann", 32);
+static final Joiner COMMA_JOINER = Joiner.on(','); // because Joiner is immutable
+static final SomeMutableType[] EMPTY_ARRAY = {};
+
+// Not constants
+static String nonFinal = "non-final";
+final String nonStatic = "non-static";
+static final Set<String> mutableCollection = new HashSet<String>();
+static final ImmutableSet<SomeMutableType> mutableElements = ImmutableSet.of(mutable);
+static final ImmutableMap<String, SomeMutableType> mutableValues =
+    ImmutableMap.of("Ed", mutableInstance, "Ann", mutableInstance2);
+static final Logger logger = Logger.getLogger(MyClass.getName());
+static final String[] nonEmptyArray = {"these", "can", "change"};
+```  
+
+상수 명은 일반적으로 명사 혹은 명사구이다.  
+
+#### 5.2.5 비상수 field 명  
+
+상수가 아닌 field 명(static이든 아니든)은 lowerCamelCase로 쓰인다.  
+
+일반적으로 명사 혹은 명사구이다. 
+예를들어 `computedValues` 혹은 `index`를 사용한다.  
+
+#### 5.2.6 매개변수 명  
+
+매개변수 명은 lowerCamelCase를 사용한다.  
+
+public method에서 하나의 문자로 된 매개변수 명은 금지된다.  
+
+#### 5.2.7 지역 변수 명  
+
+지역 변수 명은 lowerCamelCase를 사용한다.  
+
+final이고 불변이라 할지라도 지역 변수는 상수로 취급되지 않고 따라서 상수의 스타일을 사용하지 않는다.  
+
+#### 5.2.8 타입 변수 명  
+
+각 타입 변수 명은 두 가지 형식 중 하나를 사용한다:  
+
+- 하나의 대문자, 선택적으로 한자리 숫자를 뒤에 붙일 수 있음 (예 - `E`, `T`, `X`, `T2`)  
+- class에서 사용하는 형태의 이름(Section 5.2.2)에 대문자 T를 결합한 형태(예: `RequestT`, `FooBarT`).  
+
+### 5.3 camel case: 정의
+
+약어나 "IPv6" 혹은 "iOS"와 같이 독특한 형태를 띠는 경우 영어 구를 camel case로 변환하는 방법이 하나보다 많을 수 있다. 
+예측 가능성을 개선하기 위해 구글 스타일은 다음의 결정적인 체계를 지정한다.  
+
+산문 형태의 이름으로 시작하여:  
+
+1. 구문을 순수 ASCII로 변환하고 아포스트로피를 제거한다. ("Müller's algorithm" -> "Muellers algorithm")  
+2. 공백이나 모든 남아있는 구두점(일반적으로 하이픈)을 기준으로 단어들을 쪼갠다.  
+    - 권장: 단어가 이미 일반적인 사용법에서 전통적인 camel-case를 따른다면 이를 구성 부분으로 나눈다 ("AdWords" -> "ad words"). 
+      "iOS"와 같은 단어는 camel case가 아니다. 어떤 규칙에도 위배되므로 이 권장사항이 적용되지 않는다.  
+      
+3. 약어를 포함하여 모든 글자를 소문자로 바꾸고 다음의 첫번째 문자만 대문자로 지정한다:  
+    - ... 각 단어, 이는 upper camel case 혹은  
+    - ... 첫 단어를 제외한 각 단어, 이는 lower camel case 가 된다.  
+  
+4. 마지막으로 모든 단어들을 하나의 식별자로 모은다.  
+
+원래의 대소문자는 거의 완전히 무시되는 것에 주의하라.  
+
+> 참고: 일부 단어는 영어에서 모호하게 하이픈으로 연결된다. 
+> 예를 들어 "nonempty"와 "non-empty"는 둘 다 허용되므로 method 명 또한 `checkNonempty`와 `checkNonEmpty` 모두 적절하다.
